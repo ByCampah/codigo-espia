@@ -116,3 +116,60 @@ button { width: 100%; padding: 12px; font-size: 16px; font-weight: bold; border:
     color: #121824 !important;
     border-color: #ffaa00 !important;
 }
+/* public/style.css - v1.3.0 Completa */
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+
+body { background-color: #121824; color: #ffffff; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+
+/* CONTENEDOR FLEX DE DOS COLUMNAS */
+.bloque-juego-layout { display: flex; gap: 20px; align-items: flex-start; justify-content: center; width: 100%; max-width: 750px; }
+
+.link-volver { position: absolute; top: 25px; color: #6272a4; font-size: 14px; text-decoration: none; font-weight: bold; transition: color 0.2s, transform 0.2s; background: rgba(255, 255, 255, 0.03); padding: 8px 16px; border-radius: 20px; border: 1px solid #232d42; }
+.link-volver:hover { color: #ff5555; background: rgba(255, 255, 255, 0.06); transform: scale(1.02); }
+
+.contenedor-juego { background: #1e2640; width: 100%; max-width: 420px; padding: 25px; border-radius: 15px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); text-align: center; margin-top: 50px; }
+
+h1 { font-size: 24px; color: #00d2ff; margin-bottom: 5px; letter-spacing: 1px; }
+.version-tag { font-size: 11px; color: #6272a4; margin-bottom: 20px; font-weight: bold; letter-spacing: 1px; }
+
+.pantalla { display: none; }
+.pantalla.active { display: block; }
+
+input[type="text"] { width: 100%; padding: 12px; background: #121824; border: 2px solid #3a4766; border-radius: 8px; color: white; font-size: 16px; text-align: center; margin-bottom: 15px; outline: none; }
+input[type="text"]:focus { border-color: #00d2ff; }
+button { width: 100%; padding: 12px; font-size: 16px; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; transition: background 0.2s; margin-bottom: 10px; }
+.btn-principal { background-color: #00d2ff; color: #121824; }
+.btn-secundario { background-color: #3a4766; color: white; }
+.btn-jugar { background-color: #00ff87; color: #121824; font-size: 18px; }
+.separador { margin: 10px 0 20px 0; color: #6272a4; font-size: 14px; }
+.info-sala { background: #121824; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+#codigo-display { color: #00ff87; font-size: 22px; }
+#lista-jugadores { list-style: none; background: #121824; padding: 10px; border-radius: 8px; margin-bottom: 25px; text-align: left; }
+#lista-jugadores li { padding: 8px 12px; border-bottom: 1px solid #1e2640; }
+.info-ronda { font-weight: bold; color: #00ff87; margin-bottom: 15px; }
+.tarjeta-rol { background: #ff5555; color: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
+.alerta-turno { background: #121824; padding: 12px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #3a4766; }
+.instrucciones { font-size: 14px; color: #a2b1cc; margin-bottom: 20px; line-height: 1.4; }
+.contenedor-votos { display: flex; flex-direction: column; gap: 8px; margin: 20px 0; }
+.btn-votar { background: #121824; color: white; border: 1px solid #3a4766; text-align: left; padding: 12px; }
+.btn-votar:hover { background: #ff5555; }
+.espera { color: #a2b1cc; font-style: italic; }
+.contenedor-adsense { margin-top: 30px; padding-top: 15px; border-top: 1px solid #3a4766; min-height: 60px; }
+
+.banner-notificacion { background-color: #00ff87; color: #121824; padding: 10px; border-radius: 8px; font-weight: bold; margin-bottom: 15px; font-size: 14px; animation: spy-slide 0.3s ease-out; }
+.banner-error { background-color: #ff5555; color: white; padding: 10px; border-radius: 8px; font-weight: bold; margin-bottom: 15px; font-size: 14px; border: 1px solid #ff3333; animation: spy-slide 0.2s ease-out; }
+
+@keyframes spy-slide { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.btn-votar.seleccionado { background-color: #ffaa00 !important; color: #121824 !important; border-color: #ffaa00 !important; }
+
+/* --- ESTILOS DEL CHAT LATERAL --- */
+.oculto-chat { display: none !important; }
+.chat-lateral-box { width: 280px; height: 500px; background: #1e2640; border-radius: 15px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); margin-top: 50px; display: flex; flex-direction: column; overflow: hidden; border: 1px solid #3a4766; }
+.chat-header { background: #121824; padding: 12px; font-weight: bold; text-align: center; color: #00d2ff; font-size: 14px; border-bottom: 1px solid #3a4766; }
+#chat-mensajes { flex-grow: 1; padding: 12px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; font-size: 13px; text-align: left; }
+.chat-linea { word-break: break-all; }
+.chat-user-tag { font-weight: bold; color: #ffaa00; }
+.chat-user-tag.mio { color: #00ff87; }
+.chat-inputs { display: flex; border-top: 1px solid #3a4766; background: #121824; }
+.chat-inputs input { border: none; margin-bottom: 0; border-radius: 0; background: transparent; padding: 12px; text-align: left; font-size: 14px; flex-grow: 1; color: white; outline: none; }
+.chat-inputs button { margin-bottom: 0; border-radius: 0; width: 50px; background: #00d2ff; color: #121824; }

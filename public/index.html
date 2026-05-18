@@ -3,86 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Código Espía - v1.2.0</title>
+    <title>Código Espía - Plataforma</title>
     <link rel="stylesheet" href="style.css">
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3597205269278004" crossorigin="anonymous"></script>
 </head>
 <body>
 
-    <a href="https://bycampah.github.io/menu-principal/" class="link-volver">🛑 Salir y volver al menú de Juegos</a>
+    <a href="https://bycampah.github.io/menu-principal/" class="link-volver">🛑 Salir y volver al menú</a>
 
-    <div class="contenedor-juego">
-        <h1>🕵️‍♂️ CÓDIGO ESPÍA</h1>
-        <div class="version-tag">v1.2.0</div>
+    <div class="bloque-juego-layout">
+        
+        <div class="contenedor-juego">
+            <h1>🕵️‍♂️ CÓDIGO ESPÍA</h1>
+            <div class="version-tag">v1.3.0</div>
 
-        <div id="error-pantalla" class="banner-error" style="display:none;"></div>
+            <div id="error-pantalla" class="banner-error" style="display:none;"></div>
 
-        <div id="pantalla-inicio" class="pantalla active">
-            <input type="text" id="input-nombre" placeholder="Tu Nombre" maxlength="15">
-            <div class="acciones-menu">
-                <button id="btn-crear" class="btn-principal">Crear Nueva Sala</button>
+            <div id="pantalla-inicio" class="pantalla active">
+                <input type="text" id="input-nombre" placeholder="Tu Nombre" maxlength="12">
+                <button id="btn-crear" class="btn-principal">Crear Sala</button>
                 <div class="separador">ó</div>
                 <input type="text" id="input-codigo" placeholder="Código de Sala" maxlength="4">
                 <button id="btn-unirse" class="btn-secundario">Unirse a Sala</button>
             </div>
-        </div>
 
-        <div id="pantalla-lobby" class="pantalla">
-            <div class="info-sala">
-                <h3>Código de Sala: <span id="codigo-display">----</span></h3>
-                <p>Pasale este código a tus amigos para que se unan.</p>
-            </div>
-            <h4>Jugadores en la sala (<span id="contador-jugadores">0</span>):</h4>
-            <ul id="lista-jugadores"></ul>
-            <button id="btn-comenzar" class="btn-jugar" style="display: none;">¡Iniciar Partida!</button>
-        </div>
-
-        <div id="pantalla-juego" class="pantalla">
-            <div id="notificacion-ronda" class="banner-notificacion" style="display:none;"></div>
-            <div class="info-ronda">Ronda de Debate: <span id="ronda-num">1</span></div>
-            
-            <div class="tarjeta-rol">
-                <h2>Tu Información Secreta</h2>
-                <div id="bloque-info">
-                    <p><strong>Lugar:</strong> <span id="rol-lugar">Cargando...</span></p>
-                    <p><strong>Tu Rol:</strong> <span id="rol-nombre">Cargando...</span></p>
+            <div id="pantalla-lobby" class="pantalla">
+                <div class="info-sala">
+                    <p>Código para pasar:</p>
+                    <h2 id="codigo-display">----</h2>
                 </div>
+                <h3>Agentes en Base (<span id="contador-jugadores">0</span>):</h3>
+                <ul id="lista-jugadores"></ul>
+                <button id="btn-comenzar" class="btn-jugar" style="display:none;">Comenzar Operación</button>
             </div>
-            
-            <p class="instrucciones">Abran micrófonos y debatan libremente. Hagan preguntas cruzadas para desenmascarar al espía.</p>
-            
-            <button id="btn-ir-a-votar" class="btn-principal" style="display: none; background-color: #ffaa00;">⚠️ Llamar a Votación General</button>
+
+            <div id="pantalla-juego" class="pantalla">
+                <div id="notificacion-ronda" class="banner-notificacion" style="display:none;"></div>
+                <div class="info-ronda">Ronda Actual: <span id="ronda-num">1</span></div>
+                
+                <div class="tarjeta-rol">
+                    <p>📍 UBICACIÓN:</p>
+                    <h2 id="rol-lugar">???</h2>
+                    <br>
+                    <p>👤 TU ROL:</p>
+                    <h3 id="rol-nombre">Cargando...</h3>
+                </div>
+
+                <div class="alerta-turno">
+                    <p class="instrucciones">Interroguense entre ustedes. Hagan preguntas cruzadas para delatar al espía sin revelar la ubicación si sos inocente.</p>
+                </div>
+
+                <button id="btn-ir-a-votar" class="btn-principal" style="display:none; background-color: #ff5555; color: white;">🚨 DETENER RELOJ Y VOTAR</button>
+            </div>
+
+            <div id="pantalla-votacion" class="pantalla">
+                <h2 id="titulo-votacion">🚨 Hora de Votar</h2>
+                <p id="sub-votacion" class="instrucciones">Seleccioná a tu sospechoso y confirmá tu voto abajo:</p>
+                
+                <div id="caja-pendientes-voto" class="alerta-turno" style="background-color: rgba(255, 170, 0, 0.1); border-color: #ffaa00;">
+                    ⏳ Faltan votar: <span id="lista-faltan-votar" style="color: #ffaa00; font-weight: bold;">...</span>
+                </div>
+
+                <div id="lista-votacion" class="contenedor-votos"></div>
+                <button id="btn-confirmar-voto" class="btn-jugar" style="display:none; background-color: #ffaa00; color: #121824;">CONFIRMAR MI VOTO 🔒</button>
+                <p id="alerta-voto-espera" class="espera" style="display:none;">Tu voto fue cifrado. Esperando a la mesa...</p>
+            </div>
+
+            <div id="pantalla-final" class="pantalla">
+                <h2 id="ganador-titulo">¡MISION CONCLUIDA!</h2>
+                <p id="ganador-details" style="margin-bottom: 20px; color: #a2b1cc;"></p>
+                <h3 id="ganador-detalle" class="info-ronda">Detalles...</h3>
+                <button id="btn-reiniciar" class="btn-jugar">Jugar Otra Misión</button>
+            </div>
         </div>
 
-        <div id="pantalla-votacion" class="pantalla">
-            <h2 id="titulo-votacion">🚨 Hora de Votar</h2>
-            <p id="sub-votacion" class="sub">Seleccioná a tu sospechoso y confirmá tu voto abajo:</p>
-            
-            <div id="lista-votacion" class="contenedor-votos"></div>
-            
-            <button id="btn-confirmar-voto" class="btn-jugar" style="display: none; margin-top: 15px;">🔒 Confirmar Voto</button>
-            
-            <p id="alerta-voto-espera" class="espera" style="display:none;">Esperando los votos del resto...</p>
+        <div id="bloque-chat-lateral" class="chat-lateral-box oculto-chat">
+            <div class="chat-header">💬 Frecuencia de Radio (Chat)</div>
+            <div id="chat-mensajes"></div>
+            <div class="chat-inputs">
+                <input type="text" id="input-chat" placeholder="Transmitir mensaje..." maxlength="80">
+                <button id="btn-enviar-chat">➤</button>
+            </div>
         </div>
 
-        <div id="pantalla-final" class="pantalla">
-            <h2 id="ganador-titulo">¡GANADORES!</h2>
-            <p id="ganador-detalle">Detalles...</p>
-            <button id="btn-reiniciar" class="btn-jugar">Volver a Jugar</button>
-        </div>
-
-        <div class="contenedor-adsense">
-            <ins class="adsbygoogle"
-                 style="display:block"
-                 data-ad-client="ca-pub-3597205269278004"
-                 data-ad-slot="1234567890"
-                 data-ad-format="auto"
-                 data-full-width-responsive="true"></ins>
-            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-        </div>
     </div>
 
-    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
     <script src="client.js"></script>
 </body>
 </html>

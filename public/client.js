@@ -1,9 +1,9 @@
-// public/client.js - Cliente Espía v1.2.0
+// public/client.js - Cliente Espía v1.3.0
 const socket = io(window.location.hostname === 'localhost' ? 'http://localhost:3000' : window.location.origin);
 
 let miCodigoSala = "";
 let soyCreador = false;
-let idSeleccionadoTemporal = null; // Para el botón de confirmación
+let idSeleccionadoTemporal = null; 
 
 const pantallas = {
     inicio: document.getElementById('pantalla-inicio'),
@@ -13,9 +13,22 @@ const pantallas = {
     final: document.getElementById('pantalla-final')
 };
 
+const panelChat = document.getElementById('bloque-chat-lateral');
+const inputChat = document.getElementById('input-chat');
+const btnEnviarChat = document.getElementById('btn-enviar-chat');
+const chatMensajes = document.getElementById('chat-mensajes');
+const listaFaltanVotar = document.getElementById('lista-faltan-votar');
+
 function mostrarSola(clave) {
     Object.keys(pantallas).forEach(k => pantallas[k].classList.remove('active'));
     pantallas[clave].classList.add('active');
+    
+    // Activar radio lateral de chat si ya salimos de la pantalla de inicio
+    if (clave === 'inicio') {
+        panelChat.classList.add('oculto-chat');
+    } else {
+        panelChat.classList.remove('oculto-chat');
+    }
 }
 
 const inputNombre = document.getElementById('input-nombre');
@@ -42,7 +55,30 @@ btnComenzar.addEventListener('click', () => { socket.emit('iniciarPartida', miCo
 btnIrAVotar.addEventListener('click', () => { socket.emit('forzarVotacion', miCodigoSala); });
 btnReiniciar.addEventListener('click', () => { socket.emit('iniciarPartida', miCodigoSala); });
 
-// Lógica del botón de confirmación de seguridad
+// --- GESTIÓN DEL CHAT ESPÍA ---
+btnEnviarChat.addEventListener('click', () => {
+    const txt = inputChat.value.trim();
+    if (txt) {
+        socket.emit('enviar-mensaje-chat', txt);
+        inputChat.value = '';
+    }
+});
+inputChat.addEventListener('keypress', (e) => { if (e.key === 'Enter') btnEnviarChat.click(); });
+
+socket.on('nuevo-mensaje-chat', (datos) => {
+    const div = document.createElement('div');
+    div.classList.add('chat-linea');
+    if (datos.id === 'sistema') {
+        div.style.color = '#ffaa00';
+        div.innerHTML = datos.texto;
+    } else {
+        const esMio = datos.id === socket.id ? 'mio' : '';
+        div.innerHTML = `<span class="chat-user-tag ${esMio}">${datos.nombre}:</span> ${datos.texto}`;
+    }
+    chatMensajes.appendChild(div);
+    chatMensajes.scrollTop = chatMensajes.scrollHeight;
+});
+
 btnConfirmarVoto.addEventListener('click', () => {
     if (idSeleccionadoTemporal) {
         socket.emit('votarJugador', { codigoSala: miCodigoSala, idVotado: idSeleccionadoTemporal });
@@ -54,7 +90,7 @@ btnConfirmarVoto.addEventListener('click', () => {
 
 socket.on('salaCreada', ({ codigoSala, jugadores }) => {
     miCodigoSala = codigoSala;
-    soyCreador = true; // El que la crea es el dueño
+    soyCreador = true; 
     document.getElementById('codigo-display').innerText = codigoSala;
     btnComenzar.style.display = 'block';
     actualizarListaLobby(jugadores);
@@ -89,14 +125,16 @@ socket.on('tuRol', ({ lugar, rol }) => {
 socket.on('partidaIniciada', ({ creadorId, ronda }) => {
     document.getElementById('notificacion-ronda').style.display = 'none';
     document.getElementById('ronda-num').innerText = ronda;
-    
-    // Si soy el creador, se me habilita el botón físico para mandar a votar a todos
     btnIrAVotar.style.display = (socket.id === creadorId) ? 'block' : 'none';
-    
     mostrarSola('juego');
 });
 
-// Fase de Votación por Selección + Confirmar
+socket.on('votosPendientes', (listaNombres) => {
+    if (listaFaltanVotar) {
+        listaFaltanVotar.innerText = listaNombres.length > 0 ? listaNombres.join(', ') : 'Ninguno, procesando...';
+    }
+});
+
 socket.on('faseVotacion', ({ jugadoresVivos, esDesempate }) => {
     idSeleccionadoTemporal = null;
     btnConfirmarVoto.style.display = 'none';
@@ -132,15 +170,11 @@ socket.on('faseVotacion', ({ jugadoresVivos, esDesempate }) => {
             btn.innerText = `👤 Votar a ${j.nombre}`;
             
             btn.addEventListener('click', () => {
-                // Desmarcar botones anteriores
                 const botones = contenedor.querySelectorAll('.btn-votar');
                 botones.forEach(b => b.classList.remove('seleccionado'));
                 
-                // Marcar el actual como seleccionado
                 btn.classList.add('seleccionado');
                 idSeleccionadoTemporal = j.id;
-                
-                // Mostrar el botón de confirmación de seguridad
                 btnConfirmarVoto.style.display = 'block';
             });
             contenedor.appendChild(btn);

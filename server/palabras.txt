@@ -1,0 +1,10 @@
+Estación Espacial, Científico, Piloto, Astrónomo, Comandante
+Submarino Militar, Capitán, Sonarista, Cocinero, Mecánico
+Banco Central, Gerente, Guardia, Cajero, Limpiador
+Estadio de Fútbol, Director Técnico, Árbitro, Jugador, Vendedor de Panchos
+Universidad (UNSL), Profesor de Física, Alumno, Decano, Buffetero
+Cancha de Almagro, Hincha, Director Técnico, Aguatero, Jugador Nº12
+Fábrica de Alfajores, Pastelero, Maestro Confitero, Empacador, Inspector
+Estudio de Grabación, Productor, Cantante, Ingeniero de Sonido, Músico
+Mundo de Hollow Knight, Caballero, Cazador, Cartógrafo, Hada
+Refugio de Gatos, Veterinario, Cuidador, Adoptante, Limpiador
