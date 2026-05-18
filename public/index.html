@@ -3,11 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Código Espía - Juego de Engaño Social</title>
+    <title>Código Espía - Rondas Pro</title>
     <link rel="stylesheet" href="style.css">
-    
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3597205269278004"
-     crossorigin="anonymous"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3597205269278004" crossorigin="anonymous"></script>
 </head>
 <body>
 
@@ -15,11 +13,11 @@
         <h1>🕵️‍♂️ CÓDIGO ESPÍA</h1>
 
         <div id="pantalla-inicio" class="pantalla active">
-            <input type="text" id="input-nombre" placeholder="Tu Nombre o Nickname" maxlength="15">
+            <input type="text" id="input-nombre" placeholder="Tu Nombre" maxlength="15">
             <div class="acciones-menu">
                 <button id="btn-crear" class="btn-principal">Crear Nueva Sala</button>
                 <div class="separador">ó</div>
-                <input type="text" id="input-codigo" placeholder="Código de Sala (4 letras)" maxlength="4">
+                <input type="text" id="input-codigo" placeholder="Código de Sala" maxlength="4">
                 <button id="btn-unirse" class="btn-secundario">Unirse a Sala</button>
             </div>
         </div>
@@ -34,7 +32,8 @@
             <button id="btn-comenzar" class="btn-jugar" style="display: none;">¡Iniciar Partida!</button>
         </div>
 
-        <div id="pantalla-rol" class="pantalla">
+        <div id="pantalla-juego" class="pantalla">
+            <div class="info-ronda">Ronda de Preguntas: <span id="ronda-num">1</span></div>
             <div class="tarjeta-rol">
                 <h2>Tu Información Secreta</h2>
                 <div id="bloque-info">
@@ -42,8 +41,22 @@
                     <p><strong>Tu Rol:</strong> <span id="rol-nombre">Cargando...</span></p>
                 </div>
             </div>
-            <p class="instrucciones">Hagan preguntas por Discord o en persona. ¡Descubran al impostor o camuflense!</p>
-            <button id="btn-volver" class="btn-secundario">Volver al Menú</button>
+            <h4 id="indicador-turno" class="alerta-turno">Turno de: ...</h4>
+            <p class="instrucciones">Hagan preguntas cruzadas. El que tiene el turno pregunta, el resto escucha.</p>
+            <button id="btn-terminar-turno" class="btn-principal" style="display: none;">Terminar mi turno</button>
+        </div>
+
+        <div id="pantalla-votacion" class="pantalla">
+            <h2>🚨 Hora de Votar</h2>
+            <p class="sub">¿Quién sospechan que es el Impostor? Elijan uno para rajarlo:</p>
+            <div id="lista-votacion" class="contenedor-votos"></div>
+            <p id="alerta-voto-espera" class="espera" style="display:none;">Esperando los votos del resto...</p>
+        </div>
+
+        <div id="pantalla-final" class="pantalla">
+            <h2 id="ganador-titulo">¡GANADORES!</h2>
+            <p id="ganador-detalle">Detalles...</p>
+            <button id="btn-reiniciar" class="btn-jugar">Volver a Jugar</button>
         </div>
 
         <div class="contenedor-adsense">
@@ -53,9 +66,7 @@
                  data-ad-slot="1234567890"
                  data-ad-format="auto"
                  data-full-width-responsive="true"></ins>
-            <script>
-                 (adsbygoogle = window.adsbygoogle || []).push({});
-            </script>
+            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
         </div>
 
     </div>

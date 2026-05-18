@@ -1,134 +1,26 @@
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-body {
-    background-color: #121824;
-    color: #ffffff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    padding: 15px;
-}
-
-.contenedor-juego {
-    background: #1e2640;
-    width: 100%;
-    max-width: 450px;
-    padding: 25px;
-    border-radius: 15px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-    text-align: center;
-}
-
-h1 {
-    font-size: 24px;
-    color: #00d2ff;
-    margin-bottom: 25px;
-    letter-spacing: 1px;
-}
-
-.pantalla {
-    display: none;
-}
-
-.pantalla.active {
-    display: block;
-}
-
-input[type="text"] {
-    width: 100%;
-    padding: 12px;
-    background: #121824;
-    border: 2px solid #3a4766;
-    border-radius: 8px;
-    color: white;
-    font-size: 16px;
-    text-align: center;
-    margin-bottom: 15px;
-    outline: none;
-}
-
-input[type="text"]:focus {
-    border-color: #00d2ff;
-}
-
-button {
-    width: 100%;
-    padding: 12px;
-    font-size: 16px;
-    font-weight: bold;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.2s;
-    margin-bottom: 10px;
-}
-
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+body { background-color: #121824; color: #ffffff; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 15px; }
+.contenedor-juego { background: #1e2640; width: 100%; max-width: 450px; padding: 25px; border-radius: 15px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); text-align: center; }
+h1 { font-size: 24px; color: #00d2ff; margin-bottom: 25px; letter-spacing: 1px; }
+.pantalla { display: none; }
+.pantalla.active { display: block; }
+input[type="text"] { width: 100%; padding: 12px; background: #121824; border: 2px solid #3a4766; border-radius: 8px; color: white; font-size: 16px; text-align: center; margin-bottom: 15px; outline: none; }
+input[type="text"]:focus { border-color: #00d2ff; }
+button { width: 100%; padding: 12px; font-size: 16px; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; transition: background 0.2s; margin-bottom: 10px; }
 .btn-principal { background-color: #00d2ff; color: #121824; }
-.btn-principal:hover { background-color: #00b8e0; }
-
 .btn-secundario { background-color: #3a4766; color: white; }
-.btn-secundario:hover { background-color: #2e3852; }
-
 .btn-jugar { background-color: #00ff87; color: #121824; font-size: 18px; }
-.btn-jugar:hover { background-color: #00e074; }
-
-.separador {
-    margin: 10px 0 20px 0;
-    color: #6272a4;
-    font-size: 14px;
-}
-
-.info-sala {
-    background: #121824;
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-}
-
+.separador { margin: 10px 0 20px 0; color: #6272a4; font-size: 14px; }
+.info-sala { background: #121824; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
 #codigo-display { color: #00ff87; font-size: 22px; }
-
-#lista-jugadores {
-    list-style: none;
-    background: #121824;
-    padding: 10px;
-    border-radius: 8px;
-    margin-bottom: 25px;
-    text-align: left;
-    max-height: 150px;
-    overflow-y: auto;
-}
-
-#lista-jugadores li {
-    padding: 8px 12px;
-    border-bottom: 1px solid #1e2640;
-}
-
-.tarjeta-rol {
-    background: #ff5555;
-    color: white;
-    padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-}
-
-.instrucciones {
-    font-size: 14px;
-    color: #a2b1cc;
-    margin-bottom: 20px;
-    line-height: 1.4;
-}
-
-/* CONTENEDOR PARA TU PUBLICIDAD */
-.contenedor-adsense {
-    margin-top: 30px;
-    padding-top: 15px;
-    border-top: 1px solid #3a4766;
-    min-height: 60px;
-    background-color: rgba(0, 0, 0, 0.1);
-}
+#lista-jugadores { list-style: none; background: #121824; padding: 10px; border-radius: 8px; margin-bottom: 25px; text-align: left; }
+#lista-jugadores li { padding: 8px 12px; border-bottom: 1px solid #1e2640; }
+.info-ronda { font-weight: bold; color: #00ff87; margin-bottom: 15px; }
+.tarjeta-rol { background: #ff5555; color: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
+.alerta-turno { background: #121824; padding: 12px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #3a4766; }
+.instrucciones { font-size: 14px; color: #a2b1cc; margin-bottom: 20px; line-height: 1.4; }
+.contenedor-votos { display: flex; flex-direction: column; gap: 8px; margin: 20px 0; }
+.btn-votar { background: #121824; color: white; border: 1px solid #3a4766; text-align: left; padding: 12px; }
+.btn-votar:hover { background: #ff5555; }
+.espera { color: #a2b1cc; font-style: italic; }
+.contenedor-adsense { margin-top: 30px; padding-top: 15px; border-top: 1px solid #3a4766; min-height: 60px; }

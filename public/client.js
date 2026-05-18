@@ -1,73 +1,60 @@
-// client.js
-// Conexión automática al servidor (detecta si es local o en internet)
+// public/client.js
 const socket = io(window.location.hostname === 'localhost' ? 'http://localhost:3000' : window.location.origin);
 
 let miCodigoSala = "";
-let esCreador = false;
+let miTurno = false;
 
-// Elementos visuales de la interfaz
-const pantallaInicio = document.getElementById('pantalla-inicio');
-const pantallaLobby = document.getElementById('pantalla-lobby');
-const pantallaRol = document.getElementById('pantalla-rol');
+const pantallas = {
+    inicio: document.getElementById('pantalla-inicio'),
+    lobby: document.getElementById('pantalla-lobby'),
+    juego: document.getElementById('pantalla-juego'),
+    votacion: document.getElementById('pantalla-votacion'),
+    final: document.getElementById('pantalla-final')
+};
 
-// Botones y Campos de Texto
+function mostrarSola(clave) {
+    Object.keys(pantallas).forEach(k => pantallas[k].classList.remove('active'));
+    pantallas[clave].classList.add('active');
+}
+
+// Botones e Inputs
 const inputNombre = document.getElementById('input-nombre');
 const inputCodigo = document.getElementById('input-codigo');
 const btnCrear = document.getElementById('btn-crear');
 const btnUnirse = document.getElementById('btn-unirse');
 const btnComenzar = document.getElementById('btn-comenzar');
-const btnVolver = document.getElementById('btn-volver');
+const btnTerminarTurno = document.getElementById('btn-terminar-turno');
+const btnReiniciar = document.getElementById('btn-reiniciar');
 
-// Cambiar de pantalla de manera limpia
-function irAPantalla(pantallaOcultar, pantallaMostrar) {
-    pantallaOcultar.classList.remove('active');
-    pantallaMostrar.classList.add('active');
-}
-
-// ACCIÓN: Crear una Sala
 btnCrear.addEventListener('click', () => {
-    const nombre = inputNombre.value.trim();
-    if (!nombre) return alert('Por favor, ponete un nombre.');
-    esCreador = true;
-    socket.emit('crearSala', nombre);
+    const n = inputNombre.value.trim();
+    if (n) socket.emit('crearSala', n);
 });
 
-// ACCIÓN: Unirse a una Sala existente
 btnUnirse.addEventListener('click', () => {
-    const nombre = inputNombre.value.trim();
-    const codigo = inputCodigo.value.trim().toUpperCase();
-    if (!nombre || !codigo) return alert('Completá tu nombre y el código de 4 letras.');
-    socket.emit('unirseSala', { codigoSala: codigo, nombreJugador: nombre });
+    const n = inputNombre.value.trim();
+    const c = inputCodigo.value.trim().toUpperCase();
+    if (n && c) socket.emit('unirseSala', { codigoSala: c, nombreJugador: n });
 });
 
-// ACCIÓN: El creador inicia la partida
-btnComenzar.addEventListener('click', () => {
-    if (miCodigoSala) {
-        socket.emit('iniciarPartida', miCodigoSala);
-    }
-});
+btnComenzar.addEventListener('click', () => { socket.emit('iniciarPartida', miCodigoSala); });
+btnTerminarTurno.addEventListener('click', () => { socket.emit('siguienteTurno', miCodigoSala); });
+btnReiniciar.addEventListener('click', () => { socket.emit('iniciarPartida', miCodigoSala); });
 
-// ACCIÓN: Volver al menú de inicio
-btnVolver.addEventListener('click', () => {
-    location.reload(); // Recarga la pestaña para reiniciar el estado limpio
-});
-
-// RESPUESTA DEL SERVIDOR: Sala creada con éxito
+// Respuestas Servidor
 socket.on('salaCreada', ({ codigoSala, jugadores }) => {
     miCodigoSala = codigoSala;
     document.getElementById('codigo-display').innerText = codigoSala;
-    btnComenzar.style.display = 'block'; // Mostrar botón de inicio solo al creador
+    btnComenzar.style.display = 'block';
     actualizarListaLobby(jugadores);
-    irAPantalla(pantallaInicio, pantallaLobby);
+    mostrarSola('lobby');
 });
 
-// RESPUESTA DEL SERVIDOR: Actualizar lista de jugadores esperando
 socket.on('actualizarJugadores', (jugadores) => {
-    // Si entramos a la fuerza por unión exitosa
-    if (pantallaInicio.classList.contains('active')) {
+    if (pantallas.inicio.classList.contains('active')) {
         miCodigoSala = inputCodigo.value.trim().toUpperCase();
         document.getElementById('codigo-display').innerText = miCodigoSala;
-        irAPantalla(pantallaInicio, pantallaLobby);
+        mostrarSola('lobby');
     }
     actualizarListaLobby(jugadores);
 });
@@ -77,31 +64,63 @@ function actualizarListaLobby(jugadores) {
     const lista = document.getElementById('lista-jugadores');
     lista.innerHTML = "";
     jugadores.forEach(j => {
-        const li = document.createElement('li');
-        li.innerText = `👤 ${j.nombre}`;
-        lista.appendChild(li);
+        lista.innerHTML += `👤 ${j.nombre}</li>`;
     });
 }
-
-// RESPUESTA DEL SERVIDOR: Repartición de roles e inicio
-socket.on('partidaIniciada', () => {
-    irAPantalla(pantallaLobby, pantallaRol);
-});
 
 socket.on('tuRol', ({ lugar, rol }) => {
     const tarjeta = document.querySelector('.tarjeta-rol');
     document.getElementById('rol-lugar').innerText = lugar;
     document.getElementById('rol-nombre').innerText = rol;
-
-    // Si es el impostor, pintamos la tarjeta de rojo peligro, sino de verde espía
-    if (lugar === "???") {
-        tarjeta.style.backgroundColor = "#ff5555"; // Rojo
-    } else {
-        tarjeta.style.backgroundColor = "#28a745"; // Verde
-    }
+    tarjeta.style.backgroundColor = (lugar === "???") ? "#ff5555" : "#28a745";
 });
 
-// MANEJO DE ERRORES
-socket.on('errorConexion', (mensaje) => {
-    alert(mensaje);
+socket.on('partidaIniciada', ({ turnoDe, nombreTurno, ronda }) => {
+    document.getElementById('ronda-num').innerText = ronda;
+    mostrarSola('juego');
+    manejarTurno(turnoDe, nombreTurno);
 });
+
+socket.on('cambioTurno', ({ turnoDe, nombreTurno }) => { manejarTurno(turnoDe, nombreTurno); });
+
+function manejarTurno(turnoDe, nombreTurno) {
+    miTurno = (turnoDe === socket.id);
+    document.getElementById('indicador-turno').innerText = miTurno ? "¡ES TU TURNO DE PREGUNTAR!" : `Pregunta: ${nombreTurno}`;
+    btnTerminarTurno.style.display = miTurno ? 'block' : 'none';
+}
+
+socket.on('faseVotacion', (jugadoresVivos) => {
+    miTurno = false;
+    document.getElementById('alerta-voto-espera').style.display = 'none';
+    const contenedor = document.getElementById('lista-votacion');
+    contenedor.innerHTML = "";
+
+    jugadoresVivos.forEach(j => {
+        const btn = document.createElement('button');
+        btn.className = "btn-votar";
+        btn.innerText = `👤 Votar a ${j.nombre}`;
+        btn.addEventListener('click', () => {
+            socket.emit('votarJugador', { codigoSala: miCodigoSala, idVotado: j.id });
+            contenedor.innerHTML = "";
+            document.getElementById('alerta-voto-espera').style.display = 'block';
+        });
+        contenedor.appendChild(btn);
+    });
+    mostrarSola('votacion');
+});
+
+socket.on('nuevaRondaPreguntas', ({ ronda, turnoDe, nombreTurno, txtAlerta }) => {
+    document.getElementById('ronda-num').innerText = ronda;
+    alert(txtAlerta);
+    mostrarSola('juego');
+    manejarTurno(turnoDe, nombreTurno);
+});
+
+socket.on('finPartida', ({ ganador, detalle }) => {
+    document.getElementById('ganador-titulo').innerText = `¡GANAN LOS ${ganador}!`;
+    document.getElementById('ganador-titulo').style.color = (ganador === "IMPOSTOR") ? "#ff5555" : "#00ff87";
+    document.getElementById('ganador-detalle').innerText = detalle;
+    mostrarSola('final');
+});
+
+socket.on('errorConexion', (mensaje) => alert(mensaje));
