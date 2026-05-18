@@ -3,14 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Código Espía - Rondas Pro</title>
+    <title>Código Espía - v1.2.0</title>
     <link rel="stylesheet" href="style.css">
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3597205269278004" crossorigin="anonymous"></script>
 </head>
 <body>
 
+    <a href="https://bycampah.github.io/menu-principal/" class="link-volver">🛑 Salir y volver al menú de Juegos</a>
+
     <div class="contenedor-juego">
         <h1>🕵️‍♂️ CÓDIGO ESPÍA</h1>
+        <div class="version-tag">v1.2.0</div>
+
+        <div id="error-pantalla" class="banner-error" style="display:none;"></div>
 
         <div id="pantalla-inicio" class="pantalla active">
             <input type="text" id="input-nombre" placeholder="Tu Nombre" maxlength="15">
@@ -33,7 +38,9 @@
         </div>
 
         <div id="pantalla-juego" class="pantalla">
-            <div class="info-ronda">Ronda de Preguntas: <span id="ronda-num">1</span></div>
+            <div id="notificacion-ronda" class="banner-notificacion" style="display:none;"></div>
+            <div class="info-ronda">Ronda de Debate: <span id="ronda-num">1</span></div>
+            
             <div class="tarjeta-rol">
                 <h2>Tu Información Secreta</h2>
                 <div id="bloque-info">
@@ -41,15 +48,20 @@
                     <p><strong>Tu Rol:</strong> <span id="rol-nombre">Cargando...</span></p>
                 </div>
             </div>
-            <h4 id="indicador-turno" class="alerta-turno">Turno de: ...</h4>
-            <p class="instrucciones">Hagan preguntas cruzadas. El que tiene el turno pregunta, el resto escucha.</p>
-            <button id="btn-terminar-turno" class="btn-principal" style="display: none;">Terminar mi turno</button>
+            
+            <p class="instrucciones">Abran micrófonos y debatan libremente. Hagan preguntas cruzadas para desenmascarar al espía.</p>
+            
+            <button id="btn-ir-a-votar" class="btn-principal" style="display: none; background-color: #ffaa00;">⚠️ Llamar a Votación General</button>
         </div>
 
         <div id="pantalla-votacion" class="pantalla">
-            <h2>🚨 Hora de Votar</h2>
-            <p class="sub">¿Quién sospechan que es el Impostor? Elijan uno para rajarlo:</p>
+            <h2 id="titulo-votacion">🚨 Hora de Votar</h2>
+            <p id="sub-votacion" class="sub">Seleccioná a tu sospechoso y confirmá tu voto abajo:</p>
+            
             <div id="lista-votacion" class="contenedor-votos"></div>
+            
+            <button id="btn-confirmar-voto" class="btn-jugar" style="display: none; margin-top: 15px;">🔒 Confirmar Voto</button>
+            
             <p id="alerta-voto-espera" class="espera" style="display:none;">Esperando los votos del resto...</p>
         </div>
 
@@ -68,7 +80,6 @@
                  data-full-width-responsive="true"></ins>
             <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
         </div>
-
     </div>
 
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>

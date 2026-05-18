@@ -1,4 +1,4 @@
-// server/server.js
+// server/server.js - Código Espía v1.2.0
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
@@ -35,11 +35,10 @@ io.on('connection', (socket) => {
         let codigoSala = Math.random().toString(36).substring(2, 6).toUpperCase();
         salas[codigoSala] = {
             id: codigoSala,
+            creadorId: socket.id, // Guardamos quién manda en la sala
             jugadores: [{ id: socket.id, nombre: nombreJugador, vivo: true, esImpostor: false, votosRecibidos: 0 }],
             enJuego: false,
             lugarSecreto: "",
-            ordenTurnos: [],
-            indiceTurnoActual: 0,
             votosEmitidos: 0,
             rondaActual: 1
         };
@@ -59,7 +58,7 @@ io.on('connection', (socket) => {
         }
     });
 
-    // Iniciar / Reiniciar Partida
+    // Iniciar Partida
     socket.on('iniciarPartida', (codigoSala) => {
         let sala = salas[codigoSala];
         if (!sala || sala.jugadores.length < 3) return socket.emit('errorConexion', 'Se necesitan al menos 3 jugadores.');
@@ -71,16 +70,10 @@ io.on('connection', (socket) => {
         let lugarElegido = LUGARES[Math.floor(Math.random() * LUGARES.length)];
         sala.lugarSecreto = lugarElegido.nombre;
         
-        // Resetear estados
         sala.jugadores.forEach(j => { j.vivo = true; j.esImpostor = false; j.votosRecibidos = 0; });
         
-        // Elegir Impostor
         let indiceImpostor = Math.floor(Math.random() * sala.jugadores.length);
         sala.jugadores[indiceImpostor].esImpostor = true;
-
-        // Mezclar turnos aleatorios
-        sala.ordenTurnos = mezclarArray(sala.jugadores.map(j => j.id));
-        sala.indiceTurnoActual = 0;
 
         let rolesDisponibles = [...lugarElegido.roles];
 
@@ -93,48 +86,31 @@ io.on('connection', (socket) => {
             }
         });
 
-        let idTurno = sala.ordenTurnos[sala.indiceTurnoActual];
-        let nombreTurno = sala.jugadores.find(j => j.id === idTurno).nombre;
-
         io.to(codigoSala).emit('partidaIniciada', {
-            turnoDe: idTurno,
-            nombreTurno: nombreTurno,
+            creadorId: sala.creadorId,
             ronda: sala.rondaActual
         });
     });
 
-    // Avanzar Turno de Preguntas
-    socket.on('siguienteTurno', (codigoSala) => {
+    // Nueva orden: El creador manda a todos a votar
+    socket.on('forzarVotacion', (codigoSala) => {
         let sala = salas[codigoSala];
         if (!sala) return;
 
-        let encontrado = false;
-        while (!encontrado) {
-            sala.indiceTurnoActual++;
-            if (sala.indiceTurnoActual >= sala.ordenTurnos.length) break;
-            
-            let sigId = sala.ordenTurnos[sala.indiceTurnoActual];
-            let jug = sala.jugadores.find(j => j.id === sigId);
-            if (jug && jug.vivo) encontrado = true;
-        }
-
-        // Si todos los vivos ya preguntaron, pasamos a votar
-        if (sala.indiceTurnoActual >= sala.ordenTurnos.length) {
-            sala.votosEmitidos = 0;
-            sala.jugadores.forEach(j => j.votosRecibidos = 0);
-            let vivos = sala.jugadores.filter(j => j.vivo);
-            io.to(codigoSala).emit('faseVotacion', vivos);
-        } else {
-            let idTurno = sala.ordenTurnos[sala.indiceTurnoActual];
-            let nombreTurno = sala.jugadores.find(j => j.id === idTurno).nombre;
-            io.to(codigoSala).emit('cambioTurno', { turnoDe: idTurno, nombreTurno });
-        }
+        sala.votosEmitidos = 0;
+        sala.jugadores.forEach(j => j.votosRecibidos = 0);
+        let vivos = sala.jugadores.filter(j => j.vivo);
+        
+        io.to(codigoSala).emit('faseVotacion', { jugadoresVivos: vivos, esDesempate: false });
     });
 
-    // Procesar Votos
+    // Procesar Votos Seguros con Confirmación
     socket.on('votarJugador', ({ codigoSala, idVotado }) => {
         let sala = salas[codigoSala];
         if (!sala) return;
+
+        let votante = sala.jugadores.find(j => j.id === socket.id);
+        if (!votante || !votante.vivo) return; 
 
         let jugadorVotado = sala.jugadores.find(j => j.id === idVotado);
         if (jugadorVotado) jugadorVotado.votosRecibidos++;
@@ -144,8 +120,17 @@ io.on('connection', (socket) => {
 
         if (sala.votosEmitidos >= totalVivos) {
             let vivos = sala.jugadores.filter(j => j.vivo);
-            let expulsado = vivos.reduce((max, j) => j.votosRecibidos > max.votosRecibidos ? j : max, vivos[0]);
+            let maxVotos = Math.max(...vivos.map(j => j.votosRecibidos));
+            let empatados = vivos.filter(j => j.votosRecibidos === maxVotos);
 
+            if (empatados.length > 1) {
+                sala.votosEmitidos = 0;
+                sala.jugadores.forEach(j => j.votosRecibidos = 0);
+                io.to(codigoSala).emit('faseVotacion', { jugadoresVivos: empatados, esDesempate: true });
+                return;
+            }
+
+            let expulsado = empatados[0];
             expulsado.vivo = false;
 
             let impostorVivo = sala.jugadores.find(j => j.esImpostor).vivo;
@@ -160,17 +145,9 @@ io.on('connection', (socket) => {
                 sala.enJuego = false;
             } else {
                 sala.rondaActual++;
-                sala.indiceTurnoActual = 0;
-
-                let primerIdVivo = sala.ordenTurnos.find(id => sala.jugadores.find(j => j.id === id).vivo);
-                sala.indiceTurnoActual = sala.ordenTurnos.indexOf(primerIdVivo);
-                let nombreTurno = sala.jugadores.find(j => j.id === primerIdVivo).nombre;
-
                 io.to(codigoSala).emit('nuevaRondaPreguntas', {
                     ronda: sala.rondaActual,
-                    turnoDe: primerIdVivo,
-                    nombreTurno: nombreTurno,
-                    txtAlerta: `¡Expulsaron a ${expulsado.nombre}! No era el impostor. Empieza la ronda ${sala.rondaActual} de preguntas.`
+                    mensajeEstado: `¡Expulsaron a ${expulsado.nombre}! No era el impostor.`
                 });
             }
         }
@@ -179,8 +156,11 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         for (let codigo in salas) {
             salas[codigo].jugadores = salas[codigo].jugadores.filter(j => j.id !== socket.id);
-            if (salas[codigo].jugadores.length === 0) delete salas[codigo];
-            else io.to(codigo).emit('actualizarJugadores', salas[codigo].jugadores);
+            if (salas[codigo].jugadores.length === 0) {
+                delete salas[codigo];
+            } else {
+                io.to(codigo).emit('actualizarJugadores', salas[codigo].jugadores);
+            }
         }
     });
 });

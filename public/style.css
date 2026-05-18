@@ -1,9 +1,66 @@
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
-body { background-color: #121824; color: #ffffff; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 15px; }
-.contenedor-juego { background: #1e2640; width: 100%; max-width: 450px; padding: 25px; border-radius: 15px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); text-align: center; }
-h1 { font-size: 24px; color: #00d2ff; margin-bottom: 25px; letter-spacing: 1px; }
+/* public/style.css - v1.1.0 Completa */
+* { 
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0; 
+    font-family: 'Segoe UI', sans-serif; 
+}
+
+body { 
+    background-color: #121824; 
+    color: #ffffff; 
+    display: flex; 
+    flex-direction: column;
+    justify-content: center; 
+    align-items: center; 
+    min-height: 100vh; 
+    padding: 20px; 
+}
+
+/* BOTÓN SALIR FLOTANTE ARRIBA */
+.link-volver { 
+    position: absolute;
+    top: 25px;
+    color: #6272a4; 
+    font-size: 14px; 
+    text-decoration: none; 
+    font-weight: bold; 
+    transition: color 0.2s, transform 0.2s;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1px solid #232d42;
+}
+.link-volver:hover { 
+    color: #ff5555; 
+    background: rgba(255, 255, 255, 0.06);
+    transform: scale(1.02);
+}
+
+.contenedor-juego { 
+    background: #1e2640; 
+    width: 100%; 
+    max-width: 450px; 
+    padding: 25px; 
+    border-radius: 15px; 
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); 
+    text-align: center; 
+    margin-top: 50px;
+}
+
+h1 { font-size: 24px; color: #00d2ff; margin-bottom: 5px; letter-spacing: 1px; }
+
+.version-tag {
+    font-size: 11px;
+    color: #6272a4;
+    margin-bottom: 20px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
 .pantalla { display: none; }
 .pantalla.active { display: block; }
+
 input[type="text"] { width: 100%; padding: 12px; background: #121824; border: 2px solid #3a4766; border-radius: 8px; color: white; font-size: 16px; text-align: center; margin-bottom: 15px; outline: none; }
 input[type="text"]:focus { border-color: #00d2ff; }
 button { width: 100%; padding: 12px; font-size: 16px; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; transition: background 0.2s; margin-bottom: 10px; }
@@ -24,3 +81,38 @@ button { width: 100%; padding: 12px; font-size: 16px; font-weight: bold; border:
 .btn-votar:hover { background: #ff5555; }
 .espera { color: #a2b1cc; font-style: italic; }
 .contenedor-adsense { margin-top: 30px; padding-top: 15px; border-top: 1px solid #3a4766; min-height: 60px; }
+
+/* BANNERS DINÁMICOS DEL ESPÍA */
+.banner-notificacion {
+    background-color: #00ff87;
+    color: #121824;
+    padding: 10px;
+    border-radius: 8px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    font-size: 14px;
+    animation: spy-slide 0.3s ease-out;
+}
+
+.banner-error {
+    background-color: #ff5555;
+    color: white;
+    padding: 10px;
+    border-radius: 8px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    font-size: 14px;
+    border: 1px solid #ff3333;
+    animation: spy-slide 0.2s ease-out;
+}
+
+@keyframes spy-slide {
+    from { transform: scale(0.95); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.btn-votar.seleccionado {
+    background-color: #ffaa00 !important;
+    color: #121824 !important;
+    border-color: #ffaa00 !important;
+}
