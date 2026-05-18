@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Código Espía - Juego de Engaño Social</title>
+    <link rel="stylesheet" href="style.css">
+    </head>
+<body>
+
+    <div class="contenedor-juego">
+        <h1>🕵️‍♂️ CÓDIGO ESPÍA</h1>
+
+        <div id="pantalla-inicio" class="pantalla active">
+            <input type="text" id="input-nombre" placeholder="Tu Nombre o Nickname" maxlength="15">
+            <div class="acciones-menu">
+                <button id="btn-crear" class="btn-principal">Crear Nueva Sala</button>
+                <div class="separador">ó</div>
+                <input type="text" id="input-codigo" placeholder="Código de Sala (4 letras)" maxlength="4">
+                <button id="btn-unirse" class="btn-secundario">Unirse a Sala</button>
+            </div>
+        </div>
+
+        <div id="pantalla-lobby" class="pantalla">
+            <div class="info-sala">
+                <h3>Código de Sala: <span id="codigo-display">----</span></h3>
+                <p>Pasale este código a tus amigos para que se unan.</p>
+            </div>
+            <h4>Jugadores en la sala (<span id="contador-jugadores">0</span>):</h4>
+            <ul id="lista-jugadores"></ul>
+            <button id="btn-comenzar" class="btn-jugar" style="display: none;">¡Iniciar Partida!</button>
+        </div>
+
+        <div id="pantalla-rol" class="pantalla">
+            <div class="tarjeta-rol">
+                <h2>Tu Información Secreta</h2>
+                <div id="bloque-info">
+                    <p><strong>Lugar:</strong> <span id="rol-lugar">Cargando...</span></p>
+                    <p><strong>Tu Rol:</strong> <span id="rol-nombre">Cargando...</span></p>
+                </div>
+            </div>
+            <p class="instrucciones">Hagan preguntas por Discord o en persona. ¡Descubran al impostor o camuflense!</p>
+            <button id="btn-volver" class="btn-secundario">Volver al Menú</button>
+        </div>
+
+        <div class="contenedor-adsense">
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="XXXXXXXXXX"               data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="client.js"></script>
+</body>
+</html>
